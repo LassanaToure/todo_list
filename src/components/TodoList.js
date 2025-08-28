@@ -25,14 +25,14 @@ function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
 
   // BUG INTENTIONNEL: Fonction de suppression manquante
   const handleDelete = (id) => {
-    // TODO: Implémenter la suppression
-    console.log("Suppression de la tâche:", id);
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
   // BUG INTENTIONNEL: Fonction de modification manquante
   const handleUpdate = (id, updatedData) => {
-    // TODO: Implémenter la modification
-    console.log("Modification de la tâche:", id, updatedData);
+    setTodos((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, ...updatedData } : todo))
+    );
   };
 
   if (loading) {

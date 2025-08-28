@@ -16,7 +16,7 @@ function App() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://jsonplaceholder.typicode.com/todosss"
+          "https://jsonplaceholder.typicode.com/todos"
         );
         const data = await response.json();
         setTodos(data.slice(0, 5));
@@ -35,7 +35,7 @@ function App() {
       title: text,
       completed: false,
     };
-    setTodos([...todos, { ...newTodo }]);
+    setTodos([...todos, newTodo]);
   };
 
   const toggleTodo = (id) => {
