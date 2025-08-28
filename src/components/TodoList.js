@@ -6,6 +6,7 @@ function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
   // BUG INTENTIONNEL: État de filtrage manquant
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("created");
+  const [todosState, setTodos] = useState(todos || []);
 
   // BUG INTENTIONNEL: Fonction de filtrage manquante
   const getFilteredTodos = () => {
