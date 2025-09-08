@@ -25,7 +25,7 @@ function TodoList({ todos, onToggle, onDelete, onUpdate, loading }) {
         });
       case "created":
       default:
-        return sorted.sort((a, b) => b.id - a.id);
+        return sorted.sort((a, b) => b.createdAt - a.createdAt);
     }
   };
 
