@@ -36,7 +36,7 @@ function TodoList({ todos, onToggle, onDelete, onUpdate, loading }) {
 
     if (filter === "completed") {
       filtered = todos.filter((todo) => todo.completed === true);
-    } else if (filter === "pending") {
+    } else if (filter === "false") {
       filtered = todos.filter((todo) => todo.completed === false);
     }
 
