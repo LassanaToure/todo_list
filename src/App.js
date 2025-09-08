@@ -6,20 +6,29 @@ import TodoStats from "./components/TodoStats";
 
 function App() {
   const [todos, setTodos] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
         setLoading(true);
+
+        const savedTodos = localStorage.getItem("todos");
+        if (savedTodos) {
+          setTodos(JSON.parse(savedTodos));
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
           "https://jsonplaceholder.typicode.com/todos"
         );
         const data = await response.json();
-        setTodos(data.slice(0, 5));
+        const initialTodos = data.slice(0, 5);
+        setTodos(initialTodos);
+
+        localStorage.setItem("todos", JSON.stringify(initialTodos));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -29,10 +38,19 @@ function App() {
     fetchTodos();
   }, []);
 
-  const addTodo = (text) => {
+  useEffect(() => {
+    if (todos.length > 0) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, [todos]);
+
+  const addTodo = (todoData) => {
     const newTodo = {
       id: Date.now(),
-      title: text,
+      title: todoData.title,
+      description: todoData.description || "",
+      priority: todoData.priority || "medium",
+      dueDate: todoData.dueDate || "",
       completed: false,
     };
     setTodos([...todos, newTodo]);
@@ -50,9 +68,9 @@ function App() {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
-  const updateTodo = (id, newText) => {
+  const updateTodo = (id, newData) => {
     setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, title: newText } : todo))
+      prev.map((todo) => (todo.id === id ? { ...todo, ...newData } : todo))
     );
   };
 

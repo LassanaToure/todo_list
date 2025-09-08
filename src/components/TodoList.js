@@ -2,14 +2,36 @@ import React, { useState } from "react";
 import TodoItem from "./TodoItem";
 import "./TodoList.css";
 
-function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
-  // BUG INTENTIONNEL: État de filtrage manquant
+function TodoList({ todos, onToggle, onDelete, onUpdate, loading }) {
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("created");
-  const [todosState, setTodos] = useState(todos || []);
 
-  // BUG INTENTIONNEL: Fonction de filtrage manquante
+  const sortTodos = (todosToSort, sortBy) => {
+    const sorted = [...todosToSort];
+
+    switch (sortBy) {
+      case "priority":
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        return sorted.sort((a, b) => {
+          const aPriority = priorityOrder[a.priority] || 0;
+          const bPriority = priorityOrder[b.priority] || 0;
+          return bPriority - aPriority;
+        });
+      case "dueDate":
+        return sorted.sort((a, b) => {
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        });
+      case "created":
+      default:
+        return sorted.sort((a, b) => b.id - a.id);
+    }
+  };
+
   const getFilteredTodos = () => {
+    if (!todos || !Array.isArray(todos)) return [];
+
     let filtered = [...todos];
 
     if (filter === "completed") {
@@ -18,22 +40,7 @@ function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
       filtered = todos.filter((todo) => todo.completed === false);
     }
 
-    // BUG INTENTIONNEL: Tri manquant
-    // TODO: Implémenter le tri par date, priorité, etc.
-
-    return filtered;
-  };
-
-  // BUG INTENTIONNEL: Fonction de suppression manquante
-  const handleDelete = (id) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
-  };
-
-  // BUG INTENTIONNEL: Fonction de modification manquante
-  const handleUpdate = (id, updatedData) => {
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, ...updatedData } : todo))
-    );
+    return sortTodos(filtered, sortBy);
   };
 
   if (loading) {
@@ -45,7 +52,7 @@ function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
   }
 
   const filteredTodos = getFilteredTodos();
-  console.log("liste", filteredTodos);
+
   return (
     <div className="card">
       <div className="todo-list-header">
@@ -84,9 +91,9 @@ function TodoList({ todos, onToggleTodo, onDelete, onUpdate, loading }) {
             <TodoItem
               key={todo.id}
               todo={todo}
-              onToggle={onToggleTodo}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
+              onToggle={onToggle}
+              onDelete={onDelete}
+              onUpdate={onUpdate}
             />
           ))}
         </div>

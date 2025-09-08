@@ -14,8 +14,11 @@ function TodoForm({ onAdd }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
+    }
   };
 
   const validateForm = () => {
@@ -37,18 +40,30 @@ function TodoForm({ onAdd }) {
     e.preventDefault();
 
     if (validateForm()) {
+      setLoading(true);
+
       onAdd({
         title: formData.title,
         description: formData.description,
         priority: formData.priority,
         dueDate: formData.dueDate,
       });
+
+      setFormData({
+        title: "",
+        description: "",
+        priority: "medium",
+        dueDate: "",
+      });
+
       setLoading(false);
     }
   };
+
   if (loading) {
     return <div>Chargement...</div>;
   }
+
   return (
     <div className="card">
       <h2>Nouvelle Tâche</h2>
@@ -107,8 +122,8 @@ function TodoForm({ onAdd }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Créer la tâche
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Création..." : "Créer la tâche"}
         </button>
       </form>
     </div>
