@@ -65,7 +65,7 @@ function TodoList({ todos, onToggle, onDelete, onUpdate, loading }) {
             className="filter-select"
           >
             <option value="all">Toutes</option>
-            <option value="pending">En cours</option>
+            <option value="false">En cours</option>
             <option value="completed">Terminées</option>
           </select>
 
