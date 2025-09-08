@@ -47,6 +47,7 @@ function App() {
   const addTodo = (todoData) => {
     const newTodo = {
       id: Date.now(),
+      createdAt:Date.now(),
       title: todoData.title,
       description: todoData.description || "",
       priority: todoData.priority || "medium",
